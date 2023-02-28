@@ -9,13 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          repository: guilhermeqmaia/assets_repository
+          ref: ${{ github.event.client_payload.ref }}
+          
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: ${{ github.event.client_payload.artifact_name }}
+
       - name: Extract artifact
         run: |
-          unzip -qq ${{ github.event.client_payload.artifact_name }} -d assets/
+          unzip -qq ${{ github.event.client_payload.artifact_name }} -d 'assets/'
       
       - name: Create branch
         run: |
