@@ -1,0 +1,39 @@
+name: Consume Assets from Assets-Repository
+
+on:
+  repository_dispatch:
+    types: [update-assets]
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ github.event.client_payload.artifact_name }}
+      
+      - name: Extract Artifact
+          run: |
+            unzip -qq ${{ github.event.client_payload.artifact_name }} -d assets/
+      
+      - name: Create branch
+        run: |
+          git branch ${{ github.event.client_payload.branch_name }}
+          git checkout ${{ github.event.client_payload.branch_name }}
+      
+      - name: Commit changes
+        run: |
+          git add .
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Add files from artifact"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.11.1
+        with:
+          title: "Add files from artifact"
+          branch: ${{ github.event.client_payload.branch_name }}
+          base: main
+          token: ${{ secrets.CREATE_PR_ACCESS }}
