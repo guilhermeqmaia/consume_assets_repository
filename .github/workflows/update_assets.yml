@@ -38,12 +38,18 @@ jobs:
         run: |
           git add .
           git commit -m "Add files from artifact"
-          git checkout -b ${{ github.event.client_payload.branch_name }}  
+          git checkout -b ${{ github.event.client_payload.branch_name }}
+          git push origin ${{ github.event.client_payload.branch_name }}
           
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4.2.3
+        if: ${{ success() }}
+        uses: repo-sync/pull-request@v2
         with:
-          title: "Add files from artifact"
-          branch: ${{ github.event.client_payload.branch_name }}
-          base: main
-          token: ${{ secrets.CREATE_PR_ACCESS }}
+          source_branch: "update/assets"                          
+          destination_branch: "main"                      
+          pr_title: "Atualização de token" 
+          pr_body: ":crown: Esse PR traz novas atualizações de assets"             
+          pr_label: "assets/update"                               
+          pr_draft: false                                    
+          pr_allow_empty: false                           
+          github_token: ${{ secrets.CREATE_PR_ACCESS }}
