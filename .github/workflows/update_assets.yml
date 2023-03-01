@@ -28,18 +28,18 @@ jobs:
       - name: Extract artifact
         run: |
           unzip -qq ${{ github.event.client_payload.artifact_name }} -d 'assets/'
-      
-      - name: Create branch
+          
+      - name: Setup Git Config
         run: |
-          git branch ${{ github.event.client_payload.branch_name }}
-          git checkout ${{ github.event.client_payload.branch_name }}
+           git config user.name "github-actions[bot]"
+           git config user.email "github-actions[bot]@users.noreply.github.com"
       
       - name: Commit changes
         run: |
           git add .
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "Add files from artifact"
+          git checkout ${{ github.event.client_payload.branch_name }}  
+          
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4.2.3
         with:
