@@ -27,7 +27,7 @@ jobs:
       
       - name: Extract artifact
         run: |
-          unzip -qq ${{ github.event.client_payload.artifact_name }} -d 'assets/assets.zip'
+          unzip -qq ${{ github.event.client_payload.artifact_name }} -d 'assets/'
           
       - name: Setup Git Config
         run: |
