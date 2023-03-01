@@ -22,12 +22,12 @@ jobs:
              -H "Accept: application/vnd.github.v3+json" \
              https://api.github.com/repos/guilhermeqmaia/assets_repository/actions/artifacts \
              | jq -r '.artifacts[] | select(.name == env.ARTIFACT_NAME) | .archive_download_url' \
-             | xargs curl -sSL -H "Authorization: Bearer ${{ secrets.DOWNLOAD_ACCESS }}" -o assets.zip
+             | xargs curl -sSL -H "Authorization: Bearer ${{ secrets.DOWNLOAD_ACCESS }}" -o assets/
 
 
       - name: Extract artifact
         run: |
-          unzip -qq ${{ github.event.client_payload.artifact_name }} -d 'assets/'
+          unzip -qq ${{ github.event.client_payload.artifact_name }} -d 'assets/assets.zip'
           
       - name: Setup Git Config
         run: |
