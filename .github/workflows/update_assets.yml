@@ -29,6 +29,9 @@ jobs:
         run: |
           unzip -qq -o ${{ github.event.client_payload.artifact_name }} -d 'assets/'
           
+      - name: Remove Unnecessary Archive
+        run: rm assets.zip
+          
       - name: Setup Git Config
         run: |
            git config user.name "github-actions[bot]"
