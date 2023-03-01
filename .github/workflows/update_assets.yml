@@ -33,22 +33,23 @@ jobs:
         run: |
            git config user.name "github-actions[bot]"
            git config user.email "github-actions[bot]@users.noreply.github.com"
+           git branch ${{ github.event.client_payload.branch_name }}
+           git checkout ${{ github.event.client_payload.branch_name }}
       
       - name: Commit changes
         run: |
           git add .
           git commit -m "Add files from artifact"
-          git checkout -b ${{ github.event.client_payload.branch_name }}
           git push origin ${{ github.event.client_payload.branch_name }}
           
       - name: Create Pull Request
         if: ${{ success() }}
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: "update/assets"                          
+          source_branch: ${{ github.event.client_payload.branch_name }}                        
           destination_branch: "main"                      
-          pr_title: "Atualização de token" 
-          pr_body: ":crown: Esse PR traz novas atualizações de assets"             
+          pr_title: "Atualização de assets" 
+          pr_body: "Esse PR traz novas atualizações de assets"             
           pr_label: "assets/update"                               
           pr_draft: false                                    
           pr_allow_empty: false                           
